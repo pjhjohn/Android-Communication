@@ -21,6 +21,42 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+
+    def STRING = "string"
+    def APP_NAME = "app_name"
+    def APP_KEY = "app_key"
+
+    flavorDimensions "dimension"
+    productFlavors {
+        base {
+            dimension "dimension"
+            applicationIdSuffix ".develop"
+            resValue STRING, APP_NAME, "Base ${computeVersionName()}"
+            resValue STRING, APP_KEY, "2af56e31-d2dd-40ef-80b3-d9e505759e4f"
+        }
+
+        compare {
+            dimension "dimension"
+            resValue STRING, APP_NAME, "Compare ${computeVersionName()}"
+            resValue STRING, APP_KEY, "2af56e31-d2dd-40ef-80b3-d9e505759e4f"
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            if (output != null && output.outputFileName.endsWith('.apk')) {
+                def outputDir = "../../../../../../release-${computeVersionName()}/"
+                def outputName = "${archivesBaseName}-${variant.name}-${computeVersionName()}.apk"
+                output.outputFileName = "${outputDir}/${outputName}"
+            }
+        }
+    }
 }
 
 dependencies {
